@@ -103,7 +103,7 @@ export const projects: Project[] = [
     videos: [
       {
         url: 'https://youtu.be/eUXGzE8xQ0k',  
-        title: 'Autocross Run',
+        title: 'Pushing a Trailer into a parking spot',
         thumbnail: '',
       },
       {
