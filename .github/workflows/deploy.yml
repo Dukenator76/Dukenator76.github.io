@@ -26,9 +26,18 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Create .nojekyll
+        run: touch dist/.nojekyll
+
+      - name: Configure Headers
+        run: |
+          echo '/*' > dist/_headers
+          echo '  Content-Type: application/javascript' >> dist/_headers
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           cname: dukenator76.github.io
+          enable_jekyll: false
