@@ -1,0 +1,10 @@
+*.js    text eol=lf linguist-language=JavaScript
+*.mjs   text eol=lf linguist-language=JavaScript
+*.jsx   text eol=lf linguist-language=JavaScript
+*.ts    text eol=lf linguist-language=TypeScript
+*.tsx   text eol=lf linguist-language=TypeScript
+*.json  text eol=lf linguist-language=JSON
+*.html  text eol=lf linguist-language=HTML
+*.css   text eol=lf linguist-language=CSS
+
+dist/assets/*.js linguist-generated=true linguist-language=JavaScript

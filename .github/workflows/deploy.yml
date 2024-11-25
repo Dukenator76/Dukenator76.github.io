@@ -27,8 +27,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create .nojekyll
-        run: touch dist/.nojekyll
+      - name: Configure MIME Types
+        run: |
+          echo "/* application/javascript" > dist/_headers
+          touch dist/.nojekyll
+          cp .gitattributes dist/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
