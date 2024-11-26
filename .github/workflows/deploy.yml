@@ -29,16 +29,12 @@ jobs:
 
       - name: Configure Files
         run: |
-          cp public/_headers dist/
-          cp public/.nojekyll dist/
-          cp netlify.toml dist/
-          cp .gitattributes dist/
+          touch dist/.nojekyll
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: dukenator76.github.io
           enable_jekyll: false
           force_orphan: true
