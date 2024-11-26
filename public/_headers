@@ -23,9 +23,18 @@
   Content-Type: application/json
   X-Content-Type-Options: nosniff
 
+/*.tsx
+  Content-Type: application/javascript
+  X-Content-Type-Options: nosniff
+
+/*.ts
+  Content-Type: application/javascript
+  X-Content-Type-Options: nosniff
+
 /*.ico
   Content-Type: image/x-icon
   X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=31536000
 
 /*.png
   Content-Type: image/png
