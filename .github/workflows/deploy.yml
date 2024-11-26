@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'dist/**'
+      - '.github/workflows/**'
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 permissions:
   contents: write
