@@ -23,5 +23,21 @@
   Content-Type: application/json
   X-Content-Type-Options: nosniff
 
+/*.ico
+  Content-Type: image/x-icon
+  X-Content-Type-Options: nosniff
+
+/*.png
+  Content-Type: image/png
+  X-Content-Type-Options: nosniff
+
+/*.jpg
+  Content-Type: image/jpeg
+  X-Content-Type-Options: nosniff
+
+/*.svg
+  Content-Type: image/svg+xml
+  X-Content-Type-Options: nosniff
+
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
