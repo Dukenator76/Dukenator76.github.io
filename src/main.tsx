@@ -1,6 +1,7 @@
+/// <reference types="vite/client" />
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
@@ -9,8 +10,8 @@ if (!rootElement) throw new Error('Root element not found');
 
 createRoot(rootElement).render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter basename="/">
       <App />
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 );

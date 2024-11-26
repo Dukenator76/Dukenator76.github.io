@@ -6,12 +6,14 @@ export default defineConfig({
   plugins: [
     react(),
     {
-      name: 'configure-response-headers',
-      configureServer: (server) => {
-        server.middlewares.use((_req, res, next) => {
-          res.setHeader('Content-Type', 'application/javascript');
-          next();
-        });
+      name: 'typescript',
+      enforce: 'pre',
+      transform(code, id) {
+        if (!id.endsWith('.tsx')) return null;
+        return {
+          code,
+          map: null
+        };
       }
     }
   ],
@@ -21,9 +23,9 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       output: {
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`
+        entryFileNames: 'assets/[name].[hash].mjs',
+        chunkFileNames: 'assets/[name].[hash].mjs',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
   }
