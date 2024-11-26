@@ -27,10 +27,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Configure MIME Types
+      - name: Configure Files
         run: |
-          echo "/* application/javascript" > dist/_headers
-          touch dist/.nojekyll
+          cp public/_headers dist/
+          cp public/.nojekyll dist/
+          cp netlify.toml dist/
           cp .gitattributes dist/
 
       - name: Deploy
