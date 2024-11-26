@@ -6,5 +6,6 @@ export default defineConfig({
   base: '/Website/',
   build: {
     outDir: 'dist'
-  }
+  },
+  assetsInclude: ['**/*.mp4', '**/*.webm'] // Add support for video files
 })
