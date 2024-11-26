@@ -30,6 +30,7 @@ jobs:
       - name: Configure Files
         run: |
           touch dist/.nojekyll
+          echo "/* application/javascript" > dist/_headers
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
