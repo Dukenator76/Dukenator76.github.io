@@ -22,7 +22,7 @@ export const projects: Project[] = [
         results: 'Successfully designed and tested. It is currently being implemented in current projects. This new control scheme is 20.42% cheaper and more efficient to manufacture.'
       },
       {
-        title: 'Environmental Control',
+        title: 'Air Filtration System',
         description: 'This is an air filtration system. Plant air can be very dirty and causes many problems with our laser scanner. I was tasked with designing and implementing a system that would filter the air and ensure that it was clean enough for the scanner to function properly.',
         image: '/images/Air Filter Cabinet.JPG',
         challenges: 'Ensureing that this system would be protected on the plant floor. Keeping this simple to build while staying cost effective.',
