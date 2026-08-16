@@ -1,142 +1,165 @@
-import React from 'react';
-import { Menu, X, Settings, Download } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Menu, X, Settings, FileText } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const SECTIONS = ['projects', 'experience', 'about', 'contact'] as const;
 
 export default function Header() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
 
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? scrollTop / docHeight : 0);
+      setScrolled(scrollTop > 20);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Track which section is in view (home page only)
+  useEffect(() => {
+    if (!isHomePage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -45% 0px' }
+    );
+    SECTIONS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [isHomePage]);
+
   const scrollToSection = (sectionId: string) => {
+    setIsOpen(false);
     if (!isHomePage) {
-      // If not on home page, navigate to home page with section in URL
-      window.location.href = `/#${sectionId}`;
+      navigate(`/#${sectionId}`);
       return;
     }
-    
-    // If on home page, scroll to section
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleNameClick = () => {
+    setIsOpen(false);
     if (!isHomePage) {
-      // If not on home page, navigate to home
-      window.location.href = '/';
+      navigate('/');
     } else {
-      // If on home page, smooth scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Add a small delay to let the scroll finish before focusing the email button
-    setTimeout(() => {
-      const emailButton = document.querySelector('a[href^="mailto:"]');
-      if (emailButton) {
-        emailButton.classList.remove('animate-custom-flash');
-        // Trigger reflow to restart animation
-        void emailButton.offsetWidth;
-        emailButton.classList.add('animate-custom-flash');
-        setTimeout(() => {
-          emailButton.classList.remove('animate-custom-flash');
-        }, 1000);
-      }
-    }, 500);
-  };
-
   return (
-    <header className="fixed w-full bg-gray-950/95 backdrop-blur-sm z-50 border-b border-gray-900">
+    <header
+      className={`fixed z-50 w-full transition-all duration-300 ${
+        scrolled ? 'border-b border-gray-800/80 bg-gray-950/80 shadow-lg shadow-gray-950/50 backdrop-blur-md' : 'bg-transparent'
+      }`}
+    >
+      <a
+        href="#projects"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-5 focus:py-2 focus:font-semibold focus:text-white"
+      >
+        Skip to content
+      </a>
+
+      {/* Scroll progress bar */}
+      <div
+        className="absolute left-0 top-0 h-[2px] bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 transition-transform duration-100"
+        style={{ width: '100%', transform: `scaleX(${progress})`, transformOrigin: 'left' }}
+      />
+
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <button onClick={handleNameClick} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <Settings className="w-8 h-8 text-blue-500 animate-spin-slow" />
-            <span className="text-xl font-bold text-white">Ducati Mondani</span>
+          <button
+            onClick={handleNameClick}
+            aria-label="Ducati Mondani — back to top"
+            className="group flex items-center space-x-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+          >
+            <Settings className="h-8 w-8 text-blue-500 transition-transform duration-700 group-hover:rotate-180" />
+            <span className="font-display text-xl font-bold text-white">
+              Ducati<span className="text-gradient"> Mondani</span>
+            </span>
           </button>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <NavLink onClick={() => scrollToSection('about')}>About</NavLink>
-            <NavLink onClick={() => scrollToSection('experience')}>Experience</NavLink>
-            <NavLink onClick={() => scrollToSection('projects')}>Projects</NavLink>
-            <NavLink onClick={() => scrollToSection('skills')}>Skills</NavLink>
-            <NavLink onClick={scrollToTop}>Contact</NavLink>
-            <a 
+
+          <div className="hidden items-center space-x-1 md:flex">
+            {SECTIONS.map((id) => (
+              <button
+                key={id}
+                onClick={() => scrollToSection(id)}
+                aria-current={activeSection === id && isHomePage ? 'true' : undefined}
+                className={`relative rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 ${
+                  activeSection === id && isHomePage
+                    ? 'bg-blue-500/10 text-blue-400'
+                    : 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
+                }`}
+              >
+                {id}
+              </button>
+            ))}
+            <a
               href="/Ducati_Mondani_Resume.pdf"
-              download
-              className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open('/Ducati_Mondani_Resume.pdf', '_blank');
-              }}
+              className="ml-3 flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:shadow-blue-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
             >
-              <Download className="w-4 h-4" />
+              <FileText className="h-4 w-4" />
               <span>Resume</span>
             </a>
           </div>
 
-          <button 
-            className="md:hidden text-white"
+          <button
+            className="rounded-md p-1 text-white transition-colors hover:bg-gray-800 md:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
           >
             {isOpen ? <X /> : <Menu />}
           </button>
         </div>
 
         {/* Mobile menu */}
-        {isOpen && (
-          <div className="md:hidden mt-4 space-y-4">
-            <MobileNavLink onClick={() => { scrollToSection('about'); setIsOpen(false); }}>About</MobileNavLink>
-            <MobileNavLink onClick={() => { scrollToSection('experience'); setIsOpen(false); }}>Experience</MobileNavLink>
-            <MobileNavLink onClick={() => { scrollToSection('projects'); setIsOpen(false); }}>Projects</MobileNavLink>
-            <MobileNavLink onClick={() => { scrollToSection('skills'); setIsOpen(false); }}>Skills</MobileNavLink>
-            <MobileNavLink onClick={() => { scrollToTop(); setIsOpen(false); }}>Contact</MobileNavLink>
-            <a 
-              href="/Ducati_Mondani_Resume.pdf"
-              download
-              className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors w-full"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open('/Ducati_Mondani_Resume.pdf', '_blank');
-                setIsOpen(false);
-              }}
-            >
-              <Download className="w-4 h-4" />
-              <span>Resume</span>
-            </a>
+        <div
+          className={`grid transition-all duration-300 ease-out md:hidden ${
+            isOpen ? 'mt-4 grid-rows-[1fr] opacity-100' : 'invisible grid-rows-[0fr] opacity-0'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="space-y-1 rounded-2xl border border-gray-800 bg-gray-900/90 p-3 backdrop-blur-md">
+              {SECTIONS.map((id) => (
+                <button
+                  key={id}
+                  onClick={() => scrollToSection(id)}
+                  className="block w-full rounded-lg px-4 py-2.5 text-left capitalize text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
+                >
+                  {id}
+                </button>
+              ))}
+              <a
+                href="/Ducati_Mondani_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="mt-2 flex items-center justify-center space-x-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-semibold text-white"
+              >
+                <FileText className="h-4 w-4" />
+                <span>Resume</span>
+              </a>
+            </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
 }
-
-const NavLink = ({ onClick, children }: { onClick: () => void; children: React.ReactNode }) => (
-  <button
-    onClick={onClick}
-    className="text-gray-300 hover:text-white transition-colors"
-  >
-    {children}
-  </button>
-);
-
-const MobileNavLink = ({ 
-  onClick,
-  children,
-}: { 
-  onClick: () => void;
-  children: React.ReactNode;
-}) => (
-  <button
-    onClick={onClick}
-    className="block w-full text-left text-gray-300 hover:text-white transition-colors"
-  >
-    {children}
-  </button>
-);

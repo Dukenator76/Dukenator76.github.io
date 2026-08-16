@@ -6,36 +6,117 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-gray-950 text-white;
+    @apply bg-gray-950 font-sans text-white antialiased;
+  }
+
+  ::selection {
+    @apply bg-blue-600/60 text-white;
+  }
+
+  /* Media is not draggable or selectable, so it cannot be dragged to the desktop or into
+     another tab. Same friction social platforms apply; it does not prevent a determined
+     download, which is impossible for anything the browser has to render. */
+  img,
+  video {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-700;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
+  }
+}
+
+@layer components {
+  /* Blueprint-style engineering grid backdrop */
+  .blueprint-grid {
+    background-image:
+      linear-gradient(rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+      linear-gradient(rgba(59, 130, 246, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.035) 1px, transparent 1px);
+    background-size:
+      120px 120px,
+      120px 120px,
+      24px 24px,
+      24px 24px;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent;
+  }
+
+  .glass-card {
+    @apply border border-gray-800 bg-gray-900/60 backdrop-blur-sm;
+  }
+
+  /* Card with a gradient border glow on hover */
+  .glow-card {
+    @apply relative rounded-2xl border border-gray-800 bg-gray-900/80 transition-all duration-300;
+  }
+  .glow-card:hover {
+    @apply -translate-y-1.5 border-blue-500/50;
+    box-shadow:
+      0 0 0 1px rgba(59, 130, 246, 0.15),
+      0 20px 50px -12px rgba(59, 130, 246, 0.25);
   }
 }
 
 @layer utilities {
-  .animate-spin-slow {
-    animation: spin 3s linear infinite;
+  /* Scroll-reveal states driven by the <Reveal> component */
+  .reveal-hidden {
+    opacity: 0;
+    transform: translateY(32px);
   }
-  
-  .animate-custom-flash {
-    animation: custom-flash 1s ease-in-out;
+  .reveal-hidden.reveal-left {
+    transform: translateX(-40px);
+  }
+  .reveal-hidden.reveal-right {
+    transform: translateX(40px);
+  }
+  .reveal-hidden.reveal-scale {
+    transform: scale(0.92);
+  }
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .pause-on-hover:hover .animate-marquee {
+    animation-play-state: paused;
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  to {
-    transform: rotate(360deg);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-@keyframes custom-flash {
-  0%, 100% {
-    background-color: rgb(37, 99, 235); /* blue-600 */
-  }
-  50% {
-    background-color: rgb(34, 197, 94); /* green-500 */
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
   }
 }

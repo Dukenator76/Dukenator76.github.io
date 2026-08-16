@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Private working notes — never published
+/DoNotInclude/
+
+# Camera/editor originals kept locally only. These are the masters the web-optimized
+# copies in public/ are derived from; GitHub rejects files over 100 MB.
+/src/videos/*.mp4
+/src/*.heic
+/pdfraw.txt

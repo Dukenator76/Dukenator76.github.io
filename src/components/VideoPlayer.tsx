@@ -1,77 +1,75 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface VideoPlayerProps {
   src: string;
   poster?: string;
   title?: string;
+  caption?: string;
 }
 
-export default function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
+const isYouTubeUrl = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
+
+const getYouTubeEmbedUrl = (url: string) => {
+  const youtubeRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
+  const match = url.match(youtubeRegex);
+  // youtube-nocookie.com avoids setting tracking cookies for visitors
+  return match ? `https://www.youtube-nocookie.com/embed/${match[1]}` : url;
+};
+
+export default function VideoPlayer({ src, poster, title, caption }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const isYouTubeUrl = (url: string) => {
-    return url.includes('youtube.com') || url.includes('youtu.be');
-  };
-
-  const getYouTubeEmbedUrl = (url: string) => {
-    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(youtubeRegex);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
-  };
-
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      videoRef.current.volume = 0.15; // Set volume to 50%
-    }
+    videoRef.current?.load();
   }, [src]);
+
+  const label = caption || title;
 
   if (isYouTubeUrl(src)) {
     return (
-      <div className="rounded-lg overflow-hidden shadow-xl aspect-video">
-        <iframe
-          className="w-full h-full"
-          src={getYouTubeEmbedUrl(src)}
-          title={title || "YouTube video player"}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        {title && (
-          <div className="bg-gray-900 p-3">
-            <p className="text-sm text-gray-300">{title}</p>
-          </div>
+      <figure className="overflow-hidden rounded-2xl border border-gray-800 shadow-xl">
+        <div className="aspect-video">
+          <iframe
+            className="h-full w-full"
+            src={getYouTubeEmbedUrl(src)}
+            title={title || 'Project video'}
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </div>
+        {label && (
+          <figcaption className="border-t border-gray-800 bg-gray-900/80 px-4 py-3 text-sm text-gray-400">
+            {label}
+          </figcaption>
         )}
-      </div>
+      </figure>
     );
   }
 
   return (
-    <div className="rounded-lg overflow-hidden shadow-xl">
+    <figure className="overflow-hidden rounded-2xl border border-gray-800 shadow-xl">
+      {/* No autoplay — playback is always user-initiated, with controls and a poster frame. */}
       <video
         ref={videoRef}
         controls
-        poster={poster}
-        className="w-full"
+        playsInline
         preload="metadata"
-        onError={(e) => {
-          console.error('Video error:', e);
-          const videoElement = e.target as HTMLVideoElement;
-          console.log('Video source:', videoElement.currentSrc);
-        }}
+        poster={poster}
+        aria-label={title || 'Project video'}
+        // Hides the download button in the browser's native control bar.
+        controlsList="nodownload noplaybackrate"
+        disablePictureInPicture
+        className="w-full bg-gray-950"
       >
-        <source 
-          src={src} 
-          type="video/mp4"
-          onError={(e) => console.error('Source error:', e)} 
-        />
+        <source src={src} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      {title && (
-        <div className="bg-gray-900 p-3">
-          <p className="text-sm text-gray-300">{title}</p>
-        </div>
+      {label && (
+        <figcaption className="border-t border-gray-800 bg-gray-900/80 px-4 py-3 text-sm text-gray-400">
+          {label}
+        </figcaption>
       )}
-    </div>
+    </figure>
   );
 }
