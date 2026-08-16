@@ -85,16 +85,6 @@ function HomePage() {
           <div className="container relative mx-auto max-w-6xl px-4 pb-24 pt-32 md:pt-40">
             <div className="max-w-3xl lg:ml-auto">
               <Reveal>
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/40 bg-gray-950/60 px-4 py-1.5 text-sm text-blue-200 backdrop-blur-sm">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-                  </span>
-                  Mechanical Design · Robotics · Automation
-                </div>
-              </Reveal>
-
-              <Reveal delay={100}>
                 <p className="font-display text-base font-semibold uppercase tracking-[0.2em] text-gray-300">
                   Ducati Mondani
                 </p>
@@ -107,14 +97,14 @@ function HomePage() {
                 </h1>
               </Reveal>
 
-              <Reveal delay={200}>
+              <Reveal delay={100}>
                 <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-300">
                   I design and develop complex electromechanical and robotic systems from concept
                   through fabrication, integration, and commissioning.
                 </p>
               </Reveal>
 
-              <Reveal delay={300}>
+              <Reveal delay={200}>
                 <div className="mt-9 flex flex-wrap items-center gap-4">
                   <a
                     href="#projects"
