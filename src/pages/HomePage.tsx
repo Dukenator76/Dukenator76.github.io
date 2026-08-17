@@ -40,10 +40,10 @@ const MARQUEE_ITEMS = [
 ];
 
 /**
- * Measured from the start of the first professional role in industry — Manufacturing
- * Support Specialist at Vesuvius USA, January 2017 (per resume).
+ * Measured from the start of the first engineering role — Project Engineer at Vesuvius USA,
+ * June 2022 (per resume). Earlier manufacturing roles are deliberately not counted here.
  */
-const CAREER_START = new Date(2017, 0);
+const CAREER_START = new Date(2022, 5);
 const yearsOfExperience = Math.floor(
   (Date.now() - CAREER_START.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
 );
@@ -153,7 +153,7 @@ function HomePage() {
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
                 <StatCard
                   value={<AnimatedCounter value={yearsOfExperience} suffix="+" />}
-                  label="Years in industry"
+                  label="Years of engineering"
                 />
                 <StatCard value={<AnimatedCounter value={10} suffix="+" />} label="Major installations led" />
                 <StatCard value={<AnimatedCounter value={1} prefix="$" suffix="M+" />} label="Peak project value" />
